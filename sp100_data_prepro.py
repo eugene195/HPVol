@@ -35,8 +35,10 @@ spx_dec_exp["Mid_IV"] = py_vollib_vectorized.vectorized_implied_volatility(
     spx_dec_exp["Call_Put"].str.lower(), q=0, model='black_scholes_merton', return_as='numpy', on_error='ignore'
 )
 
-ticks_atm_log_mon = spx_dec_exp.loc[(spx_dec_exp['Price_strike'] < spx_dec_exp['Underlying_mid_price'] * 1.005) &
-                                    (spx_dec_exp['Price_strike'] > spx_dec_exp['Underlying_mid_price'] * 0.995)]
+# atm range: https://repositorio.ucp.pt/bitstream/10400.14/29052/1/Dissertation%20Hanna%20Nikanorova.pdf
+# 0.975 and 1.025
+ticks_atm_log_mon = spx_dec_exp.loc[(spx_dec_exp['Price_strike'] < spx_dec_exp['Underlying_mid_price'] * 1.025) &
+                                    (spx_dec_exp['Price_strike'] > spx_dec_exp['Underlying_mid_price'] * 0.975)]
 
 print(len(ticks_atm_log_mon))
 print("Put vs Call count")

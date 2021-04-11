@@ -43,8 +43,9 @@ log_moneyness_threshold = 0.03
 
 # ticks_atm_log_mon = spx_dec_exp.loc[(spx_dec_exp['log_moneyness'] < log_moneyness_threshold) & (spx_dec_exp['log_moneyness'] > -log_moneyness_threshold)]
 # atm range: https://repositorio.ucp.pt/bitstream/10400.14/29052/1/Dissertation%20Hanna%20Nikanorova.pdf
-ticks_atm_log_mon = spx_dec_exp.loc[(spx_dec_exp['Price_strike'] < spx_dec_exp['Underlying_mid_price'] * 1.005) &
-                                    (spx_dec_exp['Price_strike'] > spx_dec_exp['Underlying_mid_price'] * 0.995)]
+# 0.975 and 1.025
+ticks_atm_log_mon = spx_dec_exp.loc[(spx_dec_exp['Price_strike'] < spx_dec_exp['Underlying_mid_price'] * 1.025) &
+                                    (spx_dec_exp['Price_strike'] > spx_dec_exp['Underlying_mid_price'] * 0.975)]
 print(len(ticks_atm_log_mon))
 print("Put vs Call count")
 print(len(ticks_atm_log_mon.loc[(ticks_atm_log_mon['Call_Put'] == "P")]))
