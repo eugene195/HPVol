@@ -2,6 +2,7 @@
 # Don't forget these two:
 # !pip install tick
 # !pip install py_vollib_vectorized
+# !pip install statsmodels
 
 import pandas as pd
 import numpy as np
