@@ -15,12 +15,15 @@ def _clean_directory(test_name):
 
 
 def write_results_(best_initial_value, best_betas, best_result, file_name):
-    if (best_initial_value == -np.inf) or (best_betas == -np.inf) or (best_result == -np.inf):
-        results = {"init": np.nan, "betas": np.nan, "result": np.nan}
-    else:
+    try:
+        if (best_initial_value == -np.inf) or (best_betas == -np.inf) or (best_result == -np.inf):
+            results = {"init": np.nan, "betas": np.nan, "result": np.nan}
+        else:
+            results = {"init": [best_initial_value], "betas": [best_betas], "result": [best_result]}
+    except ValueError:
         results = {"init": best_initial_value, "betas": best_betas, "result": best_result}
 
-    results_df = pd.DataFrame(results, index=[0])
+    results_df = pd.DataFrame(results)
     results_df.to_csv(file_name)
 
 
@@ -47,8 +50,8 @@ def try_params(timestamps, fun, test_name, key):
 
 
 def run_test(params, run_f, test_name, parallel=True):
-    if test_name:
-        _clean_directory(test_name)
+    # if test_name:
+    #     _clean_directory(test_name)
     if parallel:
         p = Pool(processes=multiprocessing.cpu_count())
         result = p.map(run_f, params)

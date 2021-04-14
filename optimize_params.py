@@ -1,11 +1,8 @@
-from functools import partial
-
-from tick.hawkes import HawkesExpKern, HawkesSumExpKern
 import numpy as np
 from scipy.optimize import *
+from tick.hawkes import HawkesExpKern, HawkesSumExpKern
 
 from lib import csv_reader
-from multiprocessing_sim import split_simple_config, try_params, run_test, split_complex_config
 
 
 def single_exp(decays, events):
@@ -24,28 +21,6 @@ def sum_n_exp_minimiser(decays, timestamps):
 
 def exp_minimiser(x, timestamps):
     return minimize(single_exp, x0=[x], args=(timestamps), method='Nelder-Mead', tol=1e-5)
-
-
-def test_1(timestamps):
-    start = 0.001
-    stop = 5
-    N = 1e6
-    test_name = "1Expo"
-    test1_params = np.linspace(start, stop, int(N))
-    param_configs = [(c, "{}".format(c[0])) for c in split_simple_config(test1_params)]
-    run_simulation_func = partial(try_params, timestamps, exp_minimiser, test_name)
-    run_test(param_configs, run_simulation_func, test_name=test_name, parallel=True)
-
-
-def test_2(timestamps):
-    start = 0.001
-    stop = 5
-    N = 1e4
-    test_name = "2Expo"
-    test1_params = np.linspace(start, stop, int(N))
-    param_configs = [(c, "{}".format(c[0])) for c in split_complex_config([test1_params] * 2)]
-    run_simulation_func = partial(try_params, timestamps, sum_n_exp_minimiser, test_name)
-    run_test(param_configs, run_simulation_func, test_name=test_name, parallel=True)
 
 
 def get_timestamps():
@@ -80,11 +55,3 @@ def get_timestamps():
         print("Increasing: {}".format(np.all(np.diff(ts_) > 0)))
 
     return all_timestamps
-
-test_1(
-    get_timestamps()
-)
-
-test_2(
-    get_timestamps()
-)
