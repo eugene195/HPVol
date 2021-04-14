@@ -63,3 +63,18 @@ def smoothen_ts_jumps(data_df, key="Mid_price"):
 def raw_ds_columns():
     return ['Trade_date', 'Bid_time', 'Option_expiration', 'Call_Put', 'Price_strike', 'Bid_price', 'Bid_size',
             'Ask_price',  'Ask_size', 'Mid_price', 'Underlying_mid_price', 'log_moneyness', 'Time_to_expiry', 'Mid_IV']
+
+
+def csv_reader(name):
+    df = pd.read_csv(name, header=None)
+
+    df.set_index(0)
+
+    df.drop(df.columns[0], axis=1, inplace=True)
+    df.columns = df.iloc[0]
+    df = df.iloc[1:]
+
+    df["Bid_time"] = df["Bid_time"].astype(float)
+    df["Mid_IV"] = df["Mid_IV"].astype(float)
+    df["Mid_price"] = df["Mid_price"].astype(float)
+    return df

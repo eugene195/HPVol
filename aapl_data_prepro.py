@@ -16,7 +16,10 @@ df2["Underlying_mid_price"] = df2["Underlying_mid_price"].astype(float)
 df2["Timestamp"] = df2["Timestamp"].astype(int)
 df2.rename(columns={'CallPut': 'Call_Put'}, inplace=True)
 df2.rename(columns={'Timestamp': 'Bid_time'}, inplace=True)
+df2["Bid_time"] = pd.to_datetime(df2["Bid_time"], format="%H%M%S%f").apply(lambda dt: dt.replace(year=1970)).astype(np.int64)
 df2 = df2.sort_values(by=['Bid_time'])
+
+print("Time conversion done")
 
 time_to_exp = df2["Time_to_expiry"].tolist()[0]
 df2.drop('Time_to_expiry', axis=1, inplace=True)
@@ -32,6 +35,10 @@ puts.drop('Call_Put', axis=1, inplace=True)
 calls = calls.groupby(['Bid_time']).mean().reset_index()
 puts = puts.groupby(['Bid_time']).mean().reset_index()
 
+print(len(calls))
+print(len(puts))
+
+
 puts["Mid_IV"] = py_vollib_vectorized.vectorized_implied_volatility(
     puts["Mid_price"], puts["Underlying_mid_price"], puts["Price_strike"],
     time_to_exp, 0.0,
@@ -44,6 +51,8 @@ puts["Delta"] = py_vollib_vectorized.greeks.delta(
     model='black_scholes_merton', return_as='numpy'
 )
 
+print("Puts done")
+
 calls["Mid_IV"] = py_vollib_vectorized.vectorized_implied_volatility(
     calls["Mid_price"], calls["Underlying_mid_price"], calls["Price_strike"],
     time_to_exp, 0.0,
@@ -55,6 +64,8 @@ calls["Delta"] = py_vollib_vectorized.greeks.delta(
     time_to_exp, 0.0, calls["Mid_IV"], q=0,
     model='black_scholes_merton', return_as='numpy'
 )
+
+print("Calls done")
 
 mult_gt, mult_lt = 1.025, 0.975
 atm_mult_gt, atm_mult_lt = 1.1, 0.1
@@ -77,4 +88,4 @@ for dataset_name, dataset in zip(["ticks_60dp", "ticks_60dc", "ticks_50dc"],
                                  [ticks_60d_put, ticks_60d_call, ticks_50d]):
     dataset.reset_index(drop=True, inplace=True)
     # ds_to_csv = dataset[raw_ds_columns()]
-    dataset.iloc[10000:80000].to_csv("data/{}_AAPL.csv".format(dataset_name), )
+    dataset.iloc[0:70000].to_csv("data/{}_AAPL.csv".format(dataset_name), )
