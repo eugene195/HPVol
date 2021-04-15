@@ -8,7 +8,7 @@ from optimize_params import sum_n_exp_minimiser, get_timestamps
 def test_2(timestamps):
     start = 0.001
     stop = 0.12
-    N = 20
+    N = 100
     test_name = "2Expo"
     test1_params = np.linspace(start, stop, int(N))
     param_configs = [(c, "{}".format(c[0])) for c in split_complex_config([test1_params] * 2)]
