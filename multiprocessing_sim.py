@@ -41,9 +41,9 @@ def try_params(timestamps, fun, test_name, key):
                     best_betas = betas
                     best_initial_value = params
                     best_result = result
-                    if result - best_result < 1e-8:
-                        write_results_(best_initial_value, best_betas, best_result, file_name)
-                        return
+                    # if result - best_result < 1e-8:
+                    #     write_results_(best_initial_value, best_betas, best_result, file_name)
+                    #     return
             except:
                 print("Iteration {} erred".format(params))
     write_results_(best_initial_value, best_betas, best_result, file_name)
